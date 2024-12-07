@@ -1,0 +1,6 @@
+2024/12/07 22:43:18 Server is starting
+2024/12/07 22:43:18 Tables are not empty, skipping mapping.
+2024/12/07 22:43:18 Server is running on http://localhost:3001
+2024/12/07 22:44:26 Error decoding request body: EOF
+2024/12/07 22:44:26 Error decoding request body: EOF
+2024/12/07 22:44:40 Error updating weigh_hobbies: sql: database is closed
