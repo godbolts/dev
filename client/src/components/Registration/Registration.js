@@ -99,7 +99,7 @@ const RegisterPage = () => {
       localStorage.setItem('jwt', token);
 
       alert(`Registration successful for ${username}.`);
-      navigate('/dashboard'); // Redirect to the dashboard
+      navigate('/user'); // Redirect to the dashboard
     } catch (error) {
       alert(`Registration error: ${error.message}`);
     }

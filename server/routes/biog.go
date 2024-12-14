@@ -7,6 +7,7 @@ import (
 	databaseSetup "match_me_module/database"
 	middleware "match_me_module/middleware"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -38,7 +39,7 @@ func AboutYou(w http.ResponseWriter, r *http.Request) {
 
 	// Parse the request body to get the "About You" field
 	var requestBody struct {
-		AboutYou string `json:"about_you"`
+		AboutYou string `json:"newAbout"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
@@ -46,6 +47,7 @@ func AboutYou(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Failed to decode request body for user_id %s: %v", userID, err)
 		return
 	}
+	log.Println(requestBody.AboutYou)
 
 	if requestBody.AboutYou == "" {
 		http.Error(w, "About You field cannot be empty", http.StatusBadRequest)
@@ -53,8 +55,33 @@ func AboutYou(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Use UPSERT query to either insert or update the "about_you" field
-	query := `
+	// Connect to the database
+	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
+
+	// Use a null string to handle possible NULL values in the database
+	var currentAbout sql.NullString
+
+	// Check if the "about_me" field exists in the database
+	query := "SELECT about_me FROM profile_info WHERE user_uuid = $1"
+	err = db.QueryRow(query, userID).Scan(&currentAbout)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// If no rows are found, we return an empty string for the AboutYou field
+			currentAbout = sql.NullString{String: "", Valid: true}
+		} else {
+			http.Error(w, "Error querying database", http.StatusInternalServerError)
+			log.Printf("Error querying About Me field for user_id %s: %v", userID, err)
+			return
+		}
+	}
+
+	// If the current value of About You is NULL, we initialize it as empty
+	if !currentAbout.Valid {
+		currentAbout.String = ""
+	}
+
+	// Use UPSERT query to either insert or update the "about_me" field
+	query = `
 		INSERT INTO profile_info (user_uuid, about_me)
 		VALUES ($1, $2)
 		ON CONFLICT (user_uuid) DO UPDATE 
@@ -100,16 +127,17 @@ func AboutYouGet(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
+
+	// Use sql.NullString to handle possible NULL values from the database
+	var aboutYou sql.NullString
 
 	// Query the "About You" field from the database
-	var aboutYou string
 	query := "SELECT about_me FROM profile_info WHERE user_uuid = $1"
 	err = db.QueryRow(query, userID).Scan(&aboutYou)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			// If the user does not have an "About You" field, return an empty string
-			aboutYou = ""
+			// If the user does not have an "About You" field, set it to an empty string
+			aboutYou = sql.NullString{String: "", Valid: true}
 		} else {
 			// Handle any other database errors
 			http.Error(w, "Failed to fetch About You field", http.StatusInternalServerError)
@@ -118,10 +146,15 @@ func AboutYouGet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// If the "About You" field is NULL, return an empty string
+	if !aboutYou.Valid {
+		aboutYou.String = ""
+	}
+
 	// Send the "About You" field as a JSON response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
-		"about_you": aboutYou,
+		"about_you": aboutYou.String,
 	})
 }
 
@@ -166,11 +199,15 @@ func Birthday(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Connect to the database
+	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
+
 	// Use UPSERT query to either insert or update the "birthday" field
 	query := `
-		INSERT INTO user_info (user_uuid, birthday)
-		VALUES (?, ?)
-		ON DUPLICATE KEY UPDATE birthday = VALUES(birthday)
+		INSERT INTO user_info (user_uuid, birthdate)
+		VALUES ($1, $2)
+		ON CONFLICT (user_uuid) DO UPDATE 
+		SET birthdate = EXCLUDED.birthdate
 	`
 	_, err = db.Exec(query, userID, requestBody.Birthday)
 	if err != nil {
@@ -212,42 +249,59 @@ func BirthdayGet(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
-	// Query the "birthday" field from the database
-	var birthday string
-	query := "SELECT birthday FROM user_info WHERE user_uuid = $1"
+	// Use sql.NullString to handle possible NULL values
+	var birthday sql.NullString
+	query := "SELECT birthdate FROM user_info WHERE user_uuid = $1"
 	err = db.QueryRow(query, userID).Scan(&birthday)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "Birthday not found", http.StatusNotFound)
+			http.Error(w, "Birthdate not found", http.StatusNotFound)
 		} else {
-			http.Error(w, "Failed to fetch Birthday", http.StatusInternalServerError)
-			log.Printf("Error fetching Birthday for user_id %s: %v", userID, err)
+			http.Error(w, "Failed to fetch birthday", http.StatusInternalServerError)
+			log.Printf("Error fetching birthday for user_id %s: %v", userID, err)
 		}
 		return
 	}
 
-	// Calculate age from the birthday (assuming birthday is in YYYY-MM-DD format)
-	var age int
-	birthdayTime, err := time.Parse("2006-01-02", birthday)
-	if err != nil {
-		http.Error(w, "Invalid birthday format", http.StatusInternalServerError)
-		log.Printf("Error parsing birthday for user_id %s: %v", userID, err)
-		return
+	// If birthday is NULL, return an empty string or handle it as required
+	if !birthday.Valid {
+		// If birthday is NULL, you can decide how to handle it (e.g., return an empty string or a specific message)
+		birthday.String = ""
 	}
 
-	// Calculate the age by comparing the birthday to today's date
-	currentYear := time.Now().Year()
-	age = currentYear - birthdayTime.Year()
-	if birthdayTime.After(time.Now().AddDate(-age, 0, 0)) {
-		age-- // Adjust age if birthday hasn't occurred yet this year
+	// Debugging: Log the birthday string
+	log.Printf("Fetched birthday: %s", birthday.String)
+
+	// Trim any unwanted whitespace from the date string
+	birthdayString := strings.TrimSpace(birthday.String)
+
+	// Calculate age from the birthday (assuming birthday is in YYYY-MM-DD format)
+	var age int
+	if birthdayString != "" {
+		// Use the correct layout to handle the timestamp with time
+		birthdayTime, err := time.Parse("2006-01-02T15:04:05Z", birthdayString)
+		if err != nil {
+			http.Error(w, "Invalid birthday format", http.StatusInternalServerError)
+			log.Printf("Error parsing birthday for user_id %s: %v", userID, err)
+			return
+		}
+
+		// Calculate the age by comparing the birthday to today's date
+		currentYear := time.Now().Year()
+		age = currentYear - birthdayTime.Year()
+		if birthdayTime.After(time.Now().AddDate(-age, 0, 0)) {
+			age-- // Adjust age if birthday hasn't occurred yet this year
+		}
+	} else {
+		// If birthday is not set, age calculation can be skipped
+		age = 0 // or handle this case differently if needed
 	}
 
 	// Send the birthday and age as a JSON response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"birthday": birthday,
+		"birthday": birthdayString,
 		"age":      age,
 	})
 }

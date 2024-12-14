@@ -62,7 +62,7 @@ func main() {
 	r.HandleFunc("/api/wigh/food", routes.WeightFood).Methods("POST")
 	r.HandleFunc("/api/wigh/hobby", routes.WeightHobbies).Methods("POST")
 	r.HandleFunc("/api/wigh/music", routes.WeightMusic).Methods("POST")
-	r.HandleFunc("/api/wigh/get", routes.WeightMusic).Methods("GET")
+	r.HandleFunc("/api/wigh/get", routes.WeightGet).Methods("GET")
 
 	// Set up CORS middleware
 	corsHandler := cors.New(cors.Options{

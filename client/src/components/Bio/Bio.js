@@ -25,14 +25,14 @@ const BiographicalPage = () => {
       setLoading(true);
       try {
         // Add the Authorization header with the Bearer token
-        const aboutResponse = await axios.get("http://localhost:3001/biog/aboutget", {
+        const aboutResponse = await axios.get("http://localhost:3001/api/biog/aboutget", {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
 
-        const birthdayResponse = await axios.get("http://localhost:3001/biog/birthdayget", {
+        const birthdayResponse = await axios.get("http://localhost:3001/api/biog/birthdayget", {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -85,16 +85,21 @@ const BiographicalPage = () => {
 
     try {
       // Add the Authorization header with the Bearer token
-      await axios.post("http://localhost:3001/biog/about", { about: newAbout }, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      await axios.post(
+        "http://localhost:3001/api/biog/about", 
+        { newAbout: newAbout }, // Pass the newAbout inside the request body object
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json', // Ensure this is set for JSON data
+          }
+        }
+      );
       setSuccess("Biography updated successfully!");
     } catch (err) {
+      console.log(Request.body)
+      console.log(err); // Log the actual error object for better debugging
       setError("Failed to update biography. Please try again.");
-      console.error(err);
     }
     setLoading(false);
   };
@@ -112,7 +117,7 @@ const BiographicalPage = () => {
 
     try {
       // Add the Authorization header with the Bearer token
-      await axios.post("http://localhost:3001/biog/birthday", { birthday: newBirthday }, {
+      await axios.post("http://localhost:3001/api/biog/birthday", { birthday: newBirthday }, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

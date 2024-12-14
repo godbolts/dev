@@ -199,6 +199,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = db.Exec("INSERT INTO profile_info (user_uuid) VALUES ($1)",
+		userUUID)
+	if err != nil {
+		http.Error(w, "Error saving user weights", http.StatusInternalServerError)
+		log.Printf("Error saving user weights: %v", err)
+		return
+	}
+
 	// Respond with success message
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"message": "User registered successfully"}`))

@@ -165,12 +165,12 @@ func createTables(db *sql.DB) error {
 		`CREATE TABLE IF NOT EXISTS sessions (
 			id SERIAL PRIMARY KEY,
 			session_guid VARCHAR(8) UNIQUE,
-			user_uuid UUID,
+			user_uuid UUID UNIQUE,
 			email VARCHAR(100)
 		);`,
 		`CREATE TABLE IF NOT EXISTS profile_info (
 			id SERIAL PRIMARY KEY,
-			user_uuid UUID,
+			user_uuid UUID UNIQUE,
 			about_me VARCHAR(1000),
 			food_myvariabledata VARCHAR(1000),
 			hobbies_myvariabledata VARCHAR(1000),
@@ -193,7 +193,7 @@ func createTables(db *sql.DB) error {
 		);`,
 		`CREATE TABLE IF NOT EXISTS weights (
 			id SERIAL PRIMARY KEY,
-			user_uuid UUID,
+			user_uuid UUID UNIQUE,
 			weigh_distance NUMERIC,
 			weigh_age NUMERIC,
 			weigh_food NUMERIC,

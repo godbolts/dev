@@ -40,7 +40,7 @@ func FoodPref(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body to get the "code" and "remove" flag
 	var requestBody struct {
 		Code   string `json:"code"`
-		Remove bool   `json:"remove"`
+		Remove bool   `json:"isUnchecked"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, "Invalid request body: "+err.Error(), http.StatusBadRequest)
@@ -56,10 +56,10 @@ func FoodPref(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
-	// Query the current interests_myvariabledata for the user
-	var currentData string
+	// Change the currentData type to sql.NullString
+	var currentData sql.NullString
+
 	query := "SELECT food_myvariabledata FROM profile_info WHERE user_uuid = $1"
 	err = db.QueryRow(query, userID).Scan(&currentData)
 	if err != nil {
@@ -72,43 +72,42 @@ func FoodPref(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Split the current data into a slice of codes
-	codes := strings.Split(currentData, ",")
-	updatedCodes := []string{}
+	// Handle NULL case in the database
+	var codes []string
+	if currentData.Valid && currentData.String != "" {
+		codes = strings.Split(currentData.String, ",")
+	}
 
-	if requestBody.Remove {
-		// Remove the code if it exists
-		codeFound := false
-		for _, existingCode := range codes {
-			if existingCode == code {
+	// Add or remove the code from the list
+	var updatedCodes []string
+	codeFound := false
+	codeExists := false
+
+	// Check for existing code presence and update the list
+	for _, existingCode := range codes {
+		if existingCode == code {
+			if requestBody.Remove {
 				codeFound = true
 				continue // Skip the code to remove it
 			}
-			updatedCodes = append(updatedCodes, existingCode)
+			codeExists = true
 		}
+		updatedCodes = append(updatedCodes, existingCode)
+	}
 
-		if !codeFound {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Code not found, nothing to remove"))
-			return
-		}
-	} else {
+	if requestBody.Remove && !codeFound {
+		http.Error(w, "Code not found, nothing to remove", http.StatusNotFound)
+		return
+	}
+
+	if !requestBody.Remove && codeExists {
+		http.Error(w, "Code already exists", http.StatusBadRequest)
+		return
+	}
+
+	if !requestBody.Remove {
 		// Add the code if it doesn't already exist
-		codeExists := false
-		for _, existingCode := range codes {
-			if existingCode == code {
-				codeExists = true
-				break
-			}
-		}
-
-		if codeExists {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Code already exists"))
-			return
-		}
-
-		updatedCodes = append(codes, code)
+		updatedCodes = append(updatedCodes, code)
 	}
 
 	// Join the updated codes into a string
@@ -123,6 +122,7 @@ func FoodPref(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Respond with success
 	if requestBody.Remove {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Code removed successfully"))
@@ -159,7 +159,7 @@ func HobbyPref(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body to get the "code" and "remove" flag
 	var requestBody struct {
 		Code   string `json:"code"`
-		Remove bool   `json:"remove"`
+		Remove bool   `json:"isUnchecked"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, "Invalid request body: "+err.Error(), http.StatusBadRequest)
@@ -175,10 +175,9 @@ func HobbyPref(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Query the current interests_myvariabledata for the user
-	var currentData string
+	var currentData sql.NullString
 	query := "SELECT hobbies_myvariabledata FROM profile_info WHERE user_uuid = $1"
 	err = db.QueryRow(query, userID).Scan(&currentData)
 	if err != nil {
@@ -191,49 +190,46 @@ func HobbyPref(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Split the current data into a slice of codes
-	codes := strings.Split(currentData, ",")
-	updatedCodes := []string{}
+	// Handle NULL case in the database
+	var codes []string
+	if currentData.Valid && currentData.String != "" {
+		codes = strings.Split(currentData.String, ",")
+	}
 
-	if requestBody.Remove {
-		// Remove the code if it exists
-		codeFound := false
-		for _, existingCode := range codes {
-			if existingCode == code {
+	// Add or remove the code from the list
+	var updatedCodes []string
+	codeFound := false
+	codeExists := false
+
+	// Check for existing code presence and update the list
+	for _, existingCode := range codes {
+		if existingCode == code {
+			if requestBody.Remove {
 				codeFound = true
 				continue // Skip the code to remove it
 			}
-			updatedCodes = append(updatedCodes, existingCode)
+			codeExists = true
 		}
+		updatedCodes = append(updatedCodes, existingCode)
+	}
 
-		if !codeFound {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Code not found, nothing to remove"))
-			return
-		}
-	} else {
+	if requestBody.Remove && !codeFound {
+		http.Error(w, "Code not found, nothing to remove", http.StatusNotFound)
+		return
+	}
+
+	if !requestBody.Remove && codeExists {
+		http.Error(w, "Code already exists", http.StatusBadRequest)
+		return
+	}
+
+	if !requestBody.Remove {
 		// Add the code if it doesn't already exist
-		codeExists := false
-		for _, existingCode := range codes {
-			if existingCode == code {
-				codeExists = true
-				break
-			}
-		}
-
-		if codeExists {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Code already exists"))
-			return
-		}
-
-		updatedCodes = append(codes, code)
+		updatedCodes = append(updatedCodes, code)
 	}
 
 	// Join the updated codes into a string
 	newData := strings.Join(updatedCodes, ",")
-
-	// Update the database
 	updateQuery := "UPDATE profile_info SET hobbies_myvariabledata = $1 WHERE user_uuid = $2"
 	_, err = db.Exec(updateQuery, newData, userID)
 	if err != nil {
@@ -278,7 +274,7 @@ func MusicPref(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body to get the "code" and "remove" flag
 	var requestBody struct {
 		Code   string `json:"code"`
-		Remove bool   `json:"remove"`
+		Remove bool   `json:"isUnchecked"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, "Invalid request body: "+err.Error(), http.StatusBadRequest)
@@ -294,10 +290,9 @@ func MusicPref(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Query the current interests_myvariabledata for the user
-	var currentData string
+	var currentData sql.NullString
 	query := "SELECT music_myvariabledata FROM profile_info WHERE user_uuid = $1"
 	err = db.QueryRow(query, userID).Scan(&currentData)
 	if err != nil {
@@ -310,49 +305,46 @@ func MusicPref(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Split the current data into a slice of codes
-	codes := strings.Split(currentData, ",")
-	updatedCodes := []string{}
+	// Handle NULL case in the database
+	var codes []string
+	if currentData.Valid && currentData.String != "" {
+		codes = strings.Split(currentData.String, ",")
+	}
 
-	if requestBody.Remove {
-		// Remove the code if it exists
-		codeFound := false
-		for _, existingCode := range codes {
-			if existingCode == code {
+	// Add or remove the code from the list
+	var updatedCodes []string
+	codeFound := false
+	codeExists := false
+
+	// Check for existing code presence and update the list
+	for _, existingCode := range codes {
+		if existingCode == code {
+			if requestBody.Remove {
 				codeFound = true
 				continue // Skip the code to remove it
 			}
-			updatedCodes = append(updatedCodes, existingCode)
+			codeExists = true
 		}
+		updatedCodes = append(updatedCodes, existingCode)
+	}
 
-		if !codeFound {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Code not found, nothing to remove"))
-			return
-		}
-	} else {
+	if requestBody.Remove && !codeFound {
+		http.Error(w, "Code not found, nothing to remove", http.StatusNotFound)
+		return
+	}
+
+	if !requestBody.Remove && codeExists {
+		http.Error(w, "Code already exists", http.StatusBadRequest)
+		return
+	}
+
+	if !requestBody.Remove {
 		// Add the code if it doesn't already exist
-		codeExists := false
-		for _, existingCode := range codes {
-			if existingCode == code {
-				codeExists = true
-				break
-			}
-		}
-
-		if codeExists {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Code already exists"))
-			return
-		}
-
-		updatedCodes = append(codes, code)
+		updatedCodes = append(updatedCodes, code)
 	}
 
 	// Join the updated codes into a string
 	newData := strings.Join(updatedCodes, ",")
-
-	// Update the database
 	updateQuery := "UPDATE profile_info SET music_myvariabledata = $1 WHERE user_uuid = $2"
 	_, err = db.Exec(updateQuery, newData, userID)
 	if err != nil {
@@ -396,33 +388,35 @@ func PrefGet(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Query the current preferences for the user
-	var preferences struct {
-		InterestsMyVariableData string `json:"interests_myvariabledata"`
-		MusicMyVariableData     string `json:"music_myvariabledata"`
-		FoodMyVariableData      string `json:"food_myvariabledata"`
-	}
+	var hobbies, music, food *string // Use pointers to capture NULL values
 
 	query := `
-        SELECT interests_myvariabledata, music_myvariabledata, food_myvariabledata 
+        SELECT hobbies_myvariabledata, music_myvariabledata, food_myvariabledata 
         FROM profile_info 
         WHERE user_uuid = $1
     `
-	err = db.QueryRow(query, userID).Scan(
-		&preferences.InterestsMyVariableData,
-		&preferences.MusicMyVariableData,
-		&preferences.FoodMyVariableData,
-	)
+	err = db.QueryRow(query, userID).Scan(&hobbies, &music, &food)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "User not found", http.StatusNotFound)
-		} else {
-			http.Error(w, "Database query error", http.StatusInternalServerError)
-			log.Printf("Error querying database: %v", err)
+			return
 		}
+		http.Error(w, "Database query error", http.StatusInternalServerError)
+		log.Printf("Error querying database: %v", err)
 		return
+	}
+
+	// Handle NULL values by converting pointers to empty strings
+	preferences := struct {
+		Hobbies string `json:"hobbies_myvariabledata"`
+		Music   string `json:"music_myvariabledata"`
+		Food    string `json:"food_myvariabledata"`
+	}{
+		Hobbies: defaultString(hobbies),
+		Music:   defaultString(music),
+		Food:    defaultString(food),
 	}
 
 	// Send the preferences as JSON response
@@ -430,10 +424,17 @@ func PrefGet(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(preferences)
 }
 
+// defaultString converts a nil pointer to an empty string, or returns the value if not nil
+func defaultString(input *string) string {
+	if input == nil {
+		return ""
+	}
+	return *input
+}
+
 func PrefMappingGet(w http.ResponseWriter, r *http.Request) {
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Helper function to fetch mapping data
 	fetchMapping := func(query string, target *[]structures.PreferenceMapping) error {
@@ -441,7 +442,7 @@ func PrefMappingGet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return err
 		}
-		defer rows.Close()
+
 		for rows.Next() {
 			var item structures.PreferenceMapping
 			if err := rows.Scan(&item.Code, &item.Description); err != nil {

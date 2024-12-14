@@ -54,7 +54,6 @@ func WeightDistance(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Update the weigh_distance column for the given user
 	updateQuery := "UPDATE weights SET weigh_distance = $1 WHERE user_uuid = $2"
@@ -113,7 +112,6 @@ func WeightAge(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Update the weigh_age column for the given user
 	updateQuery := "UPDATE weights SET weigh_age = $1 WHERE user_uuid = $2"
@@ -172,7 +170,6 @@ func WeightFood(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Update the weigh_food column for the given user
 	updateQuery := "UPDATE weights SET weigh_food = $1 WHERE user_uuid = $2"
@@ -231,7 +228,6 @@ func WeightHobbies(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Update the weigh_hobbies column for the given user
 	updateQuery := "UPDATE weights SET weigh_hobbies = $1 WHERE user_uuid = $2"
@@ -290,7 +286,6 @@ func WeightMusic(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Update the weigh_music column for the given user
 	updateQuery := "UPDATE weights SET weigh_music = $1 WHERE user_uuid = $2"
@@ -332,7 +327,6 @@ func WeightGet(w http.ResponseWriter, r *http.Request) {
 
 	// Connect to the database
 	db := databaseSetup.GetDB() // Assume GetDB() returns *sql.DB
-	defer db.Close()
 
 	// Query the weights for the user
 	var weights struct {

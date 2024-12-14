@@ -35,7 +35,17 @@ const PreferenceWeights = () => {
           'Content-Type': 'application/json',
         }
       });
-      setWeights(response.data);
+
+      // Transform backend keys (snake_case) to frontend keys (camelCase)
+      const transformedWeights = {
+        distance: response.data.weigh_distance,
+        age: response.data.weigh_age,
+        food: response.data.weigh_food,
+        hobbies: response.data.weigh_hobbies,
+        music: response.data.weigh_music,
+      };
+
+      setWeights(transformedWeights);
       setError(""); // Clear any existing error
     } catch (err) {
       setError("Failed to fetch weights. Please try again.");

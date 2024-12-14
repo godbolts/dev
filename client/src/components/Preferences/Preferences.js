@@ -19,7 +19,8 @@ const Preferences = () => {
 
   useEffect(() => {
     // Fetch the preferences from the backend with authorization header
-    fetch('http://localhost:3001/pref/mapget', {
+    console.log('Fetching preferences from /api/pref/mapget...');
+    fetch('http://localhost:3001/api/pref/mapget', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -28,6 +29,7 @@ const Preferences = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log('Received preferences data:', data);
         setPreferences({
           food: data.food || [],
           hobby: data.hobby || [],
@@ -37,15 +39,17 @@ const Preferences = () => {
       .catch((error) => console.error('Error fetching preferences:', error));
 
     // Fetch the user's selected preferences from the backend with authorization header
-    fetch('http://localhost:3001/pref/get', {
+    console.log('Fetching user-selected preferences from /api/pref/get...');
+    fetch("http://localhost:3001/api/pref/get", {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`, // Add the token in the authorization header
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+        
       },
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log('Received user-selected preferences:', data);
         const userSelectedPreferences = {
           food: data.food || [],
           hobby: data.hobby || [],
@@ -85,11 +89,11 @@ const Preferences = () => {
 
     // Define the endpoint based on the category
     if (category === 'food') {
-      url = 'http://localhost:3001/pref/food';
+      url = 'http://localhost:3001/api/pref/food';
     } else if (category === 'hobby') {
-      url = 'http://localhost:3001/pref/hobby';
+      url = 'http://localhost:3001/api/pref/hobby';
     } else if (category === 'music') {
-      url = 'http://localhost:3001/pref/music';
+      url = 'http://localhost:3001/api/pref/music';
     }
 
     // Set the data to be sent in the POST request
@@ -98,16 +102,23 @@ const Preferences = () => {
       isUnchecked, // true for unchecked (disable), false for checked (enable)
     };
 
+    // Log the request details
+    console.log(`Sending POST request to ${url}`);
+    console.log('Request body:', data);
+
     // Send a POST request with the updated data and authorization header
     fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`, // Add the token in the authorization header
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+      
     })
       .then((response) => {
+        console.log(Request.body)
+        console.log(`Response from ${url}:`, response);
         if (!response.ok) {
           console.error('Failed to update preference');
         }

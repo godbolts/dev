@@ -1,6 +1,124 @@
-2024/12/07 22:43:18 Server is starting
-2024/12/07 22:43:18 Tables are not empty, skipping mapping.
-2024/12/07 22:43:18 Server is running on http://localhost:3001
-2024/12/07 22:44:26 Error decoding request body: EOF
-2024/12/07 22:44:26 Error decoding request body: EOF
-2024/12/07 22:44:40 Error updating weigh_hobbies: sql: database is closed
+2024/12/09 21:12:58 Error decoding request body: invalid character 'c' looking for beginning of object key string
+2024/12/09 21:16:05 Error decoding request body: invalid character 'c' looking for beginning of object key string
+2024/12/09 21:16:21 Server is starting
+2024/12/09 21:16:21 Tables are not empty, skipping mapping.
+2024/12/09 21:16:22 Server is running on http://localhost:3001
+2024/12/09 21:25:00 Server is starting
+2024/12/09 21:25:00 Tables are not empty, skipping mapping.
+2024/12/09 21:25:00 Server is running on http://localhost:3001
+2024/12/09 21:27:48 Error in authorizing: token is malformed: could not base64 decode signature: illegal base64 data at input byte 43
+2024/12/09 21:28:04 Error in authorizing: missing authorization header
+2024/12/09 21:28:23 Error in authorizing: token is malformed: could not base64 decode signature: illegal base64 data at input byte 43
+2024/12/09 21:34:29 Server is starting
+2024/12/09 21:34:29 Tables are not empty, skipping mapping.
+2024/12/09 21:34:29 Server is running on http://localhost:3001
+2024/12/09 21:34:49 Error in authorizing: missing authorization header
+2024/12/09 21:38:25 Server is starting
+2024/12/09 21:38:26 Server is running on http://localhost:3001
+2024/12/09 21:40:47 Error querying database: sql: Scan error on column index 0, name "hobbies_myvariabledata": converting NULL to string is unsupported
+2024/12/09 21:40:47 Error querying database: sql: Scan error on column index 0, name "hobbies_myvariabledata": converting NULL to string is unsupported
+2024/12/09 21:45:56 Server is starting
+2024/12/09 21:45:56 Tables are not empty, skipping mapping.
+2024/12/09 21:45:56 Server is running on http://localhost:3001
+2024/12/09 21:48:23 Server is starting
+2024/12/09 21:48:24 Tables are not empty, skipping mapping.
+2024/12/09 21:48:24 Server is running on http://localhost:3001
+2024/12/09 22:20:55 Server is starting
+2024/12/09 22:20:55 Tables are not empty, skipping mapping.
+2024/12/09 22:20:55 Server is running on http://localhost:3001
+2024/12/09 22:25:42 Error fetching About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: sql: Scan error on column index 0, name "about_me": converting NULL to string is unsupported
+2024/12/09 22:26:05 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:29:31 Server is starting
+2024/12/09 22:29:31 Tables are not empty, skipping mapping.
+2024/12/09 22:29:31 Server is running on http://localhost:3001
+2024/12/09 22:29:38 Error fetching Birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: pq: column "birthday" does not exist
+2024/12/09 22:29:38 Error fetching Birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: pq: column "birthday" does not exist
+2024/12/09 22:29:41 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:29:44 Error fetching Birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: pq: column "birthday" does not exist
+2024/12/09 22:29:44 Error fetching Birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: pq: column "birthday" does not exist
+2024/12/09 22:31:34 Server is starting
+2024/12/09 22:31:34 Tables are not empty, skipping mapping.
+2024/12/09 22:31:34 Server is running on http://localhost:3001
+2024/12/09 22:31:52 Error parsing birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: parsing time "2002-02-02T00:00:00Z": extra text: "T00:00:00Z"
+2024/12/09 22:31:52 Error parsing birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: parsing time "2002-02-02T00:00:00Z": extra text: "T00:00:00Z"
+2024/12/09 22:33:00 Server is starting
+2024/12/09 22:33:00 Tables are not empty, skipping mapping.
+2024/12/09 22:33:00 Server is running on http://localhost:3001
+2024/12/09 22:33:44 Server is starting
+2024/12/09 22:33:45 Tables are not empty, skipping mapping.
+2024/12/09 22:33:45 Server is running on http://localhost:3001
+2024/12/09 22:33:52 Error parsing birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: parsing time "2002-02-02T00:00:00Z" as "02-01-2006": cannot parse "02-02-02T00:00:00Z" as "-"
+2024/12/09 22:33:52 Error parsing birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: parsing time "2002-02-02T00:00:00Z" as "02-01-2006": cannot parse "02-02-02T00:00:00Z" as "-"
+2024/12/09 22:35:38 Server is starting
+2024/12/09 22:35:38 Tables are not empty, skipping mapping.
+2024/12/09 22:35:38 Server is running on http://localhost:3001
+2024/12/09 22:36:11 Error parsing birthday for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: parsing time "2002-02-02T00:00:00Z": extra text: "T00:00:00Z"
+2024/12/09 22:39:24 Server is starting
+2024/12/09 22:39:24 Tables are not empty, skipping mapping.
+2024/12/09 22:39:24 Server is running on http://localhost:3001
+2024/12/09 22:39:30 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:39:35 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:39:35 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:39:42 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:40:46 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:41:38 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:41:39 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:41:39 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:42:53 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:42:54 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:42:55 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:42:58 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:42:58 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:43:01 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:43:37 Server is starting
+2024/12/09 22:43:37 Tables are not empty, skipping mapping.
+2024/12/09 22:43:37 Server is running on http://localhost:3001
+2024/12/09 22:43:43 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:43:43 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:43:46 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:44:52 Server is starting
+2024/12/09 22:44:52 Tables are not empty, skipping mapping.
+2024/12/09 22:44:52 Server is running on http://localhost:3001
+2024/12/09 22:44:59 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:44:59 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:45:01 
+2024/12/09 22:45:01 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:47:11 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:47:11 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:47:14 
+2024/12/09 22:47:14 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:47:18 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:47:18 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:47:20 
+2024/12/09 22:47:20 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:48:24 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:48:25 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:48:26 
+2024/12/09 22:48:26 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:48:42 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:48:42 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:48:45 
+2024/12/09 22:48:45 Attempted to set an empty About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca
+2024/12/09 22:49:49 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:49:49 Fetched birthday: 2002-02-02T00:00:00Z
+2024/12/09 22:49:54 asfddfads
+2024/12/09 22:49:54 Error upserting About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: pq: there is no unique or exclusion constraint matching the ON CONFLICT specification
+2024/12/09 22:51:51 Server is starting
+2024/12/09 22:51:51 Tables are not empty, skipping mapping.
+2024/12/09 22:51:51 Server is running on http://localhost:3001
+2024/12/09 22:51:57 asfddfads
+2024/12/09 22:51:57 Error upserting About You field for user_id d140b4ac-36e7-4cae-999b-b8726f623dca: pq: there is no unique or exclusion constraint matching the ON CONFLICT specification
+2024/12/09 22:52:19 Server is starting
+2024/12/09 22:52:19 Server is running on http://localhost:3001
+2024/12/09 22:52:55 Error in authorizing: token is malformed: token contains an invalid number of segments
+2024/12/09 22:52:55 Error in authorizing: token is malformed: token contains an invalid number of segments
+2024/12/09 22:52:58 Error in authorizing: token is malformed: token contains an invalid number of segments
+2024/12/09 22:52:58 Error in authorizing: token is malformed: token contains an invalid number of segments
+2024/12/09 22:53:05 Fetched birthday: 
+2024/12/09 22:53:05 Fetched birthday: 
+2024/12/09 22:53:07 vdsvsd
+2024/12/09 22:53:09 Fetched birthday: 
+2024/12/09 22:53:09 Fetched birthday: 
+2024/12/09 22:53:13 vdsvsdfvsfdv
+2024/12/09 22:53:14 Fetched birthday: 
+2024/12/09 22:53:14 Fetched birthday: 
